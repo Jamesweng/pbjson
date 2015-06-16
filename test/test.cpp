@@ -34,6 +34,8 @@ int main()
     int ret = pbjson::json2pb(str, &new_request, err);
     printf("Json2PB result:\%d\n", ret);
 
+    google::protobuf::ShutdownProtobufLibrary();
+
     return 0;
 }
 

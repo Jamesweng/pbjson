@@ -198,8 +198,10 @@ namespace pbjson
                     {
                         const Message *value = &(ref->GetRepeatedMessage(*msg, field, i));
                         rapidjson::Value* v = parse_msg(value, allocator);
-                        json->PushBack(*v, allocator);
-                        delete v;
+                        if (v != NULL) {
+                            json->PushBack(*v, allocator);
+                            delete v;
+                        }
                     }
                 }
                 else
@@ -231,9 +233,17 @@ namespace pbjson
 
     static rapidjson::Value* parse_msg(const Message *msg, rapidjson::Value::AllocatorType& allocator)
     {
+        if (msg == NULL) {
+            return NULL;
+        }
         const Descriptor *d = msg->GetDescriptor();
         if (!d)
             return NULL;
+
+        const Reflection *ref = msg->GetReflection();
+        if (!ref)
+            return NULL;
+
         size_t count = d->field_count();
         rapidjson::Value* root = new rapidjson::Value(rapidjson::kObjectType);
         if (!root)
@@ -244,9 +254,6 @@ namespace pbjson
             if (!field)
                 return NULL;
 
-            const Reflection *ref = msg->GetReflection();
-            if (!ref)
-                return NULL;
             if (field->is_optional() && !ref->HasField(*msg, field))
             {
                 //do nothing
@@ -254,9 +261,11 @@ namespace pbjson
             else
             {
                 rapidjson::Value* field_json = field2json(msg, field, allocator);
-                rapidjson::Value field_name(field->name().c_str(), field->name().size());
-                root->AddMember(field_name, *field_json, allocator);
-                delete field_json;
+                if (field_json != NULL) {
+                    rapidjson::Value field_name(field->name().c_str(), field->name().size());
+                    root->AddMember(field_name, *field_json, allocator);
+                    delete field_json;
+                }
             }
         }
         return root;
@@ -512,8 +521,10 @@ namespace pbjson
     {
         rapidjson::Value::AllocatorType allocator;
         rapidjson::Value* json = parse_msg(msg, allocator);
-        json2string(json, str);
-        delete json;
+        if (json != NULL) {
+            json2string(json, str);
+            delete json;
+        }
     }
 
     rapidjson::Value* pb2jsonobject(const google::protobuf::Message* msg)
