@@ -3,10 +3,10 @@ CXX=g++
 
 CXXFLAGS=-Wall -g 
 
-PBINC=/usr/local/include
-PBLIB=/usr/local/lib/libprotobuf.a
+PBINC=../src/dependency/protobuf-2.6.1/include
+PBLIB=../src/dependency/protobuf-2.6.1/lib/libprotobuf.a
 
-INCS=-I./ -I../src -I${PBINC}
+INCS=-I./ -I../src -I${PBINC} -I../src/dependency/rapidjson-1.0.2/
 LIBS=${PBLIB} -lpthread
 
 %.o : %.cpp

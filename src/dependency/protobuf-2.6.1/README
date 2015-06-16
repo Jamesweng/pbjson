@@ -1,0 +1,1 @@
+./bin/protoc --cpp_out=/data/ads_dev/liuhaiwang/trunk/ori-admob/se/se_cpc/ --proto_path=/data/ads_dev/liuhaiwang/trunk/ori-admob/se/se_cpc/conf/pb_file/PBFILE
